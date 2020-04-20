@@ -344,8 +344,8 @@ Edit.Line = Edit.extend({
     this._createMiddleMarker(leftM, newM);
     this._createMiddleMarker(newM, rightM);
 
-    // fire edit event
-    this._fireEdit();
+    // don't fire edit event, this allows smoother midpoint drag handling
+    // this._fireEdit();
 
     this._layer.fire('pm:vertexadded', {
       layer: this._layer,
