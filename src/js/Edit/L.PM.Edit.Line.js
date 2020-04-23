@@ -572,6 +572,9 @@ Edit.Line = Edit.extend({
     const marker = e.target;
     const { indexPath } = this.findDeepMarkerIndex(this._markers, marker);
 
+    // store current time to allow to ignore erroneus click event right after drag end
+    this._map._lastDragTime = Date.now();
+
     // if self intersection is not allowed but this edit caused a self intersection,
     // reset and cancel; do not fire events
     if (!this.options.allowSelfIntersection && this.hasSelfIntersection()) {

@@ -38,7 +38,7 @@ Draw.Line = Draw.extend({
     this._layerGroup.addLayer(this._hintline);
 
     // this is the hintmarker on the mouse cursor
-    this._hintMarker = L.marker(this._map.getCenter(), {
+    this._hintMarker = L.marker(this._lastHintMarkerPos || this._map.getCenter(), {
       icon: L.divIcon({ className: 'marker-icon cursor-marker' }),
     });
     this._hintMarker._pmTempLayer = true;
@@ -245,6 +245,11 @@ Draw.Line = Draw.extend({
     this._syncHintLine();
   },
   _createVertex(e) {
+    // fix leaflet bug of firing click right after drag end
+    if (Date.now() - this._map._lastDragTime < 100) {
+      return;
+    }
+
     // don't create a vertex if we have a selfIntersection and it is not allowed
     if (!this.options.allowSelfIntersection) {
       this._handleSelfIntersection(true, e.latlng);

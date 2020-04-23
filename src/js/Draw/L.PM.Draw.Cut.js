@@ -89,7 +89,7 @@ Draw.Cut = Draw.Polygon.extend({
     const polygonLayer = L.polygon(coords, this.options.pathOptions);
     this._cut(polygonLayer);
 
-    // disable drawing
+    this._lastHintMarkerPos = this._hintMarker.getLatLng();
     this.disable();
 
     // clean up snapping states
