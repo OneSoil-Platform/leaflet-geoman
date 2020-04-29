@@ -138,6 +138,35 @@ Edit.Line = Edit.extend({
     return true;
   },
 
+  selectMarker(m) {
+    if (this._selectedMarkers.includes(m)) {
+      return;
+    }
+
+    this._selectedMarkers.push(m);
+    m._icon.classList.add('marker-icon-selected');
+  },
+
+  deselectMarker(m) {
+    const idx = this._selectedMarkers.indexOf(m);
+    if (idx === -1) {
+      return;
+    }
+
+    this._selectedMarkers.splice(idx, 1);
+    m._icon.classList.remove('marker-icon-selected');
+  },
+
+  removeSelectedMarkes() {
+    this._selectedMarkers.slice().forEach(m => {
+      this._removeMarker({ target: m });
+    })
+  },
+
+  deselectAllMarkers() {
+    this._selectedMarkers.slice().forEach(this.deselectMarker, this);
+  },
+
   hasSelfIntersection() {
     // check for self intersection of the layer and return true/false
     const selfIntersection = kinks(this._layer.toGeoJSON(15));
@@ -203,6 +232,8 @@ Edit.Line = Edit.extend({
     // add markerGroup to map, markerGroup includes regular and middle markers
     this._markerGroup = new L.LayerGroup();
     this._markerGroup._pmTempLayer = true;
+
+    this._selectedMarkers = [];
 
     // handle coord-rings (outer, inner, etc)
     const handleRing = coordsArr => {
@@ -427,6 +458,7 @@ Edit.Line = Edit.extend({
     }
 
     // remove the marker from the map
+    this.deselectMarker(marker);
     this._markerGroup.removeLayer(marker);
 
     let rightMarkerIndex;
@@ -544,6 +576,25 @@ Edit.Line = Edit.extend({
     const prevMarkerLatLng = markerArr[prevMarkerIndex].getLatLng();
     const nextMarkerLatLng = markerArr[nextMarkerIndex].getLatLng();
 
+    // move all selected markers at once, if we are the master marker
+    if (this._selectedMarkers.includes(marker) && this._draggedMarker === marker) {
+      const delta = L.latLng(
+        markerLatLng.lat - marker._dragStartLatLng.lat,
+        markerLatLng.lng - marker._dragStartLatLng.lng
+      );
+      this._selectedMarkers.forEach(m => {
+        if (m === marker) {
+          return;
+        }
+
+        const dragStartLatLng = m._dragStartLatLng;
+        m.setLatLng([
+          dragStartLatLng.lat + delta.lat,
+          dragStartLatLng.lng + delta.lng
+        ]);
+      });
+    }
+
     if (marker._middleMarkerNext) {
       const middleMarkerNextLatLng = Utils.calcMiddleLatLng(
         this._map,
@@ -614,6 +665,13 @@ Edit.Line = Edit.extend({
     }
 
     this.cachedColor = this._layer.options.color;
+
+    this._draggedMarker = marker;
+    if (this._selectedMarkers.includes(marker)) {
+      this._selectedMarkers.forEach(m => {
+        m._dragStartLatLng = m.getLatLng();
+      });
+    }
   },
 
   _fireEdit() {

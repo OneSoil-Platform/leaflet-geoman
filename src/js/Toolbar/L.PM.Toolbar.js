@@ -13,6 +13,7 @@ const Toolbar = L.Class.extend({
     drawCircle: true,
     drawCircleMarker: true,
     editMode: true,
+    selectMode: true,
     dragMode: true,
     cutPolygon: true,
     removalMode: true,
@@ -88,6 +89,7 @@ const Toolbar = L.Class.extend({
         drawCircle: 'control-icon leaflet-pm-icon-circle',
         drawCircleMarker: 'control-icon leaflet-pm-icon-circle-marker',
         editMode: 'control-icon leaflet-pm-icon-edit',
+        selectMode: 'control-icon leaflet-pm-icon-rectangle',
         dragMode: 'control-icon leaflet-pm-icon-drag',
         cutPolygon: 'control-icon leaflet-pm-icon-cut',
         removalMode: 'control-icon leaflet-pm-icon-delete',
@@ -282,6 +284,21 @@ const Toolbar = L.Class.extend({
       actions: ['finishMode'],
     };
 
+    const selectButton = {
+      title: getTranslation('buttonTitles.selectButton'),
+      className: 'control-icon leaflet-pm-icon-rectangle',
+      onClick: () => { },
+      afterClick: () => {
+        this.map.pm.Draw.Selection.toggle();
+      },
+      doToggle: true,
+      toggleStatus: false,
+      disableOtherButtons: true,
+      position: this.options.position,
+      tool: 'edit',
+      actions: ['finishMode'],
+    };
+
     const dragButton = {
       title: getTranslation('buttonTitles.dragButton'),
       className: 'control-icon leaflet-pm-icon-drag',
@@ -340,6 +357,7 @@ const Toolbar = L.Class.extend({
     this._addButton('drawCircle', new L.Control.PMButton(drawCircleButton));
     this._addButton('drawCircleMarker', new L.Control.PMButton(drawCircleMarkerButton));
     this._addButton('editMode', new L.Control.PMButton(editButton));
+    this._addButton('selectMode', new L.Control.PMButton(selectButton));
     this._addButton('dragMode', new L.Control.PMButton(dragButton));
     this._addButton('cutPolygon', new L.Control.PMButton(cutButton));
     this._addButton('removalMode', new L.Control.PMButton(deleteButton));

@@ -4,10 +4,15 @@
   border: 1px solid #3388ff;
   border-radius: 50%;
   margin: -8px 0 0 -8px !important;
-  width: 14px !important;
-  height: 14px !important;
+  width: 16px !important;
+  height: 16px !important;
   outline: 0;
   transition: opacity ease 0.3s;
+  box-sizing: border-box;
+}
+
+.marker-icon.marker-icon-selected {
+  border-width: 4px;
 }
 
 .marker-icon-middle,

@@ -22,6 +22,7 @@
     "drawCircleButton": "Draw Circle",
     "drawRectButton": "Draw Rectangle",
     "editButton": "Edit Layers",
+    "selectButton": "Select Points",
     "dragButton": "Drag Layers",
     "cutButton": "Cut Layers",
     "deleteButton": "Remove Layers",

@@ -1,116 +1,11 @@
-/* eslint-disable */
-// Provide your access token
+// Common data
 const accessToken =
-  'pk.eyJ1IjoibWFwc29mc3VtaXQiLCJhIjoiY2l1ZDF3dHE5MDAxZDMwbjA0cTR3dG50eSJ9.63Xci-GKFikhAobboF0DVQ';
+  'pk.eyJ1Ijoib25lc29pbCIsImEiOiJjamsydmM2Yngwd3EyM3FyeWVyOWF0cTByIn0.Crc52Fh0B1P-2M_mLrlllg';
+const mapboxTileLayerProps = [`https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/{z}/{x}/{y}?access_token=${accessToken}`, {
+  attribution:
+    '&copy; <a href="https://www.mapbox.com/feedback/">Mapbox</a> &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+}]
 
-// set mapbox tile layer
-const mapboxTiles1 = L.tileLayer(
-  `https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/{z}/{x}/{y}?access_token=${accessToken}`,
-  {
-    attribution:
-      '&copy; <a href="https://www.mapbox.com/feedback/">Mapbox</a> &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-  }
-);
-const mapboxTiles2 = L.tileLayer(
-  `https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/{z}/{x}/{y}?access_token=${accessToken}`,
-  {
-    attribution:
-      '&copy; <a href="https://www.mapbox.com/feedback/">Mapbox</a> &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-  }
-);
-const mapboxTiles3 = L.tileLayer(
-  `https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/{z}/{x}/{y}?access_token=${accessToken}`,
-  {
-    attribution:
-      '&copy; <a href="https://www.mapbox.com/feedback/">Mapbox</a> &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-  }
-);
-
-const map2 = L.map('example2')
-  .setView([51.505, -0.09], 13)
-  .addLayer(mapboxTiles1);
-const map3 = L.map('example3')
-  .setView([51.505, -0.09], 13)
-  .addLayer(mapboxTiles2);
-const map4 = L.map('example4')
-  .setView([51.505, -0.09], 13)
-  .addLayer(mapboxTiles3);
-// map2.dragging.disable();
-
-// map2.on('pm:create', function(e) {
-//     // alert('pm:create event fired. See console for details');
-//     console.log(e);
-
-//     const layer = e.layer;
-//     layer.on('pm:cut', function(ev) {
-//         console.log('cut event on layer');
-//         console.log(ev);
-//     });
-// });
-// map2.on('pm:cut', function(e) {
-//     console.log('cut event on map');
-//     console.log(e);
-// });
-// map2.on('pm:remove', function(e) {
-//     console.log('pm:remove event fired. See console for details');
-//     // alert('pm:remove event fired. See console for details');
-//     console.log(e);
-// });
-// map2.on('pm:drawstart', function(e) {
-//     console.log(e);
-//     console.log(e.workingLayer);
-// });
-
-const m1 = L.circleMarker([51.50313, -0.091223], { radius: 10 });
-const m2 = L.marker([51.50614, -0.0989]);
-const m3 = L.marker([51.50915, -0.096112], { pmIgnore: true });
-
-const mGroup = L.layerGroup([m1, m2, m3]).addTo(map2);
-// mGroup.pm.enable();
-
-map2.pm.addControls({
-  drawMarker: false,
-  drawPolygon: true,
-  editPolygon: false,
-  drawPolyline: false,
-  deleteLayer: true,
-});
-// map2.pm.addControls({
-//     drawMarker: false,
-//     drawPolygon: true,
-//     editPolygon: false,
-//     drawPolyline: false,
-//     deleteLayer: false,
-// });
-// map2.pm.addControls({
-//     drawMarker: true,
-//     drawPolygon: false,
-//     editPolygon: false,
-//     drawPolyline: false,
-//     deleteLayer: true,
-// });
-map2.pm.addControls({
-  drawMarker: true,
-  drawPolygon: true,
-  editPolygon: true,
-  drawPolyline: true,
-  deleteLayer: true,
-});
-
-// map2.pm.disableDraw('Polygon');
-// map2.pm.enableDraw('Circle', {
-//     snappable: true,
-//     cursorMarker: true
-// });
-
-// map2.pm.enableDraw('Line', { allowSelfIntersection: false });
-// map2.pm.enableDraw('Polygon', { allowSelfIntersection: false });
-
-map2.on('pm:globaleditmodetoggled', function(e) {
-  // console.log(e);
-});
-
-// GEOSJON EXAMPLE
 const geoJsonData = {
   type: 'FeatureCollection',
   features: [
@@ -198,6 +93,84 @@ const geoJsonData = {
   ],
 };
 
+// Demo 1, cutting
+
+const mapboxTiles1 = L.tileLayer(...mapboxTileLayerProps);
+
+const map1 = L.map('example1')
+  .setView([51.505, -0.09], 13)
+  .addLayer(mapboxTiles1);
+
+const theCollection2 = L.geoJson(geoJsonData, {
+  pointToLayer: () => null
+});
+theCollection2.addTo(map1);
+
+map1.fitBounds(theCollection2.getBounds());
+
+map1.pm.addControls();
+
+// map1.pm.Draw.Cut.enable();
+theCollection2.pm.enable();
+map1.on('pm:cut', event => {
+  event.layer.pm.enable();
+})
+
+
+const mapboxTiles2 = L.tileLayer(...mapboxTileLayerProps);
+const mapboxTiles3 = L.tileLayer(...mapboxTileLayerProps);
+const mapboxTiles4 = L.tileLayer(...mapboxTileLayerProps);
+
+const map2 = L.map('example2')
+  .setView([51.505, -0.09], 13)
+  .addLayer(mapboxTiles2);
+const map3 = L.map('example3')
+  .setView([51.505, -0.09], 13)
+  .addLayer(mapboxTiles3);
+const map4 = L.map('example4')
+  .setView([51.505, -0.09], 13)
+  .addLayer(mapboxTiles4);
+
+map2.pm.addControls({
+  drawMarker: false,
+  drawPolygon: true,
+  editPolygon: false,
+  drawPolyline: false,
+  deleteLayer: true,
+});
+// map2.pm.addControls({
+//     drawMarker: false,
+//     drawPolygon: true,
+//     editPolygon: false,
+//     drawPolyline: false,
+//     deleteLayer: false,
+// });
+// map2.pm.addControls({
+//     drawMarker: true,
+//     drawPolygon: false,
+//     editPolygon: false,
+//     drawPolyline: false,
+//     deleteLayer: true,
+// });
+map2.pm.addControls({
+  drawMarker: true,
+  drawPolygon: true,
+  editPolygon: true,
+  drawPolyline: true,
+  deleteLayer: true,
+});
+
+// map2.pm.disableDraw('Polygon');
+// map2.pm.enableDraw('Circle', {
+//     snappable: true,
+//     cursorMarker: true
+// });
+
+// map2.pm.enableDraw('Line', { allowSelfIntersection: false });
+// map2.pm.enableDraw('Polygon', { allowSelfIntersection: false });
+
+// GEOSJON EXAMPLE
+
 const theCollection = L.geoJson(geoJsonData, {
   pointToLayer: (feature, latlng) => {
     if (feature.properties.customGeometry) {
@@ -206,35 +179,15 @@ const theCollection = L.geoJson(geoJsonData, {
       return new L.Marker(latlng);
     }
   },
-  // onEachFeature: (feature, layer) => {
-  //     layer.addTo(map2);
-  // },
 });
-
 theCollection.addTo(map2);
+
 
 const b = theCollection.getBounds();
 map2.fitBounds(b);
 
 console.log(theCollection);
 
-theCollection.on('pm:edit', function(e) {
-  console.log(e);
-});
-
-theCollection.on('pm:dragstart', function(e) {
-  console.log(e);
-});
-
-// const geoJsonButton = document.getElementById('test-geojson');
-// const geoJsonLayer = L.geoJson(null, { pmIgnore: false });
-// geoJsonLayer.addTo(map2);
-// geoJsonLayer.addData(geoJsonData);
-
-// geoJsonLayer.pm.toggleEdit({
-//     draggable: true,
-//     snappable: true,
-// });
 
 map3.pm.addControls({
   drawMarker: true,
@@ -269,7 +222,7 @@ map3.pm.enableDraw('Polygon', {
   finishOnDoubleClick: true,
 });
 
-var scotland = L.polygon([
+const scotland = L.polygon([
   [[60, -13], [60, 0], [50, 4], [50, -13]],
   [[55.7, -4.5], [56, -4.5], [56, -4], [55.7, -4]],
 ]);
@@ -278,29 +231,6 @@ scotland.addTo(map3);
 const bounds = scotland.getBounds();
 
 map3.fitBounds(bounds);
-
-// geoJsonLayer.addEventListener('click', function(e) {
-//     geoJsonLayer.pm.toggleEdit();
-// });
-
-// geoJsonLayer.on('pm:drag', function(e) {
-//     console.log(e);
-// });
-
-map2.on('pm:drawstart', function(e) {
-  var layer = e.workingLayer;
-  // console.log(layer);
-  layer.on('pm:centerplaced', function(e) {
-    // console.log(e);
-  });
-});
-map2.on('pm:create', function(e) {
-  var layer = e.layer;
-  // console.log(layer);
-  layer.on('pm:centerplaced', function(e) {
-    // console.log(e);
-  });
-});
 
 // Polygon Example
 
@@ -312,68 +242,10 @@ const polygonLayer = L.polygon([
   .addTo(map3)
   .addTo(map2);
 
-// polygonLayer.pm.toggleEdit({
-//     allowSelfIntersection: false,
-//     preventVertexEdit: true,
-//     preventMarkerRemoval: false,
-// });
-
-polygonLayer.on('pm:update', function(e) {
-  console.log(e);
-});
-
-polygonLayer.on('pm:intersect', function(e) {
-  console.log(e);
-});
-
-// map2.pm.toggleGlobalEditMode({
-//     allowSelfIntersection: false,
-//     preventMarkerRemoval: false,
-//     preventVertexEdit: false,
-// });
-// map2.pm.disableGlobalEditMode();
-
 map2.pm.enableDraw('Polygon', { allowSelfIntersection: false });
 map2.pm.disableDraw('Polygon');
 map2.pm.enableDraw('Line', { allowSelfIntersection: false });
 map2.pm.disableDraw('Line');
-
-map2.on('pm:create', function(e) {
-  // e.layer.pm.enable({ allowSelfIntersection: false });
-  // e.layer.pm.disable();
-  // console.log(e.layer.pm.hasSelfIntersection());
-
-  e.layer.on('pm:markerdragend', function(e) {
-    // console.log(e);
-  });
-
-  e.layer.on('pm:update', function(e) {
-    console.log(e);
-  });
-
-  e.layer.on('pm:cut', function(e) {
-    console.log(e);
-  });
-});
-
-map2.on('pm:drawstart', function(e) {
-  var layer = e.workingLayer;
-  layer.on('pm:vertexadded', function(e) {
-    // console.log(e);
-    // console.log(e.workingLayer.pm.hasSelfIntersection());
-  });
-});
-
-polygonLayer.on('pm:vertexadded', function(e) {
-  // console.log(e);
-});
-polygonLayer.on('pm:vertexremoved', function(e) {
-  // console.log(e);
-});
-
-polygonLayer.on('pm:markerdragstart', function(e) {
-  // console.log(e);
-});
 
 // Layer Group Example
 
@@ -422,15 +294,6 @@ layerGroup.addLayer(someLayer);
 
 someLayer.addData(feature);
 
-layerGroup.on('pm:snap', function(e) {
-  console.log('snap');
-  console.log(e);
-});
-layerGroup.on('pm:unsnap', function(e) {
-  console.log('unsnap');
-  console.log(e);
-});
-
 map4.pm.addControls({
   position: 'topright',
 });
@@ -445,36 +308,6 @@ map4.pm.enableDraw('Marker', {
 });
 map4.pm.disableDraw('Marker');
 
-// map4.pm.setPathOptions({
-//     color: 'orange',
-//     fillColor: 'green',
-//     fillOpacity: 0.4,
-// });
 
 layerGroup.addLayer(layerGroupItem2);
 layerGroup.addLayer(layerGroupItem3);
-// layerGroup.addLayer(layerGroupItem4);
-// layerGroup.addLayer(layerGroupItem5);
-
-layerGroup.on('pm:dragstart', function(e) {
-  console.log(e);
-});
-layerGroup.on('pm:drag', function(e) {
-  console.log(e);
-});
-layerGroup.on('pm:dragend', function(e) {
-  console.log(e);
-});
-layerGroup.on('pm:markerdragstart', function(e) {
-  console.log(e);
-});
-layerGroup.on('pm:markerdragend', function(e) {
-  console.log(e);
-});
-
-// test with markercluster
-// var markers = L.markerClusterGroup();
-// markers.addLayer(L.marker([51.505, -0.07]));
-// markers.addLayer(L.marker([51.505, -0.08]));
-// markers.addLayer(L.marker([51.505, -0.09]));
-// map4.addLayer(markers);
