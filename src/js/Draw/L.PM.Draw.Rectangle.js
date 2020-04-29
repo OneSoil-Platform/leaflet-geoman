@@ -22,7 +22,13 @@ Draw.Rectangle = Draw.extend({
     this._layerGroup.addTo(this._map);
 
     // the rectangle we want to draw
-    this._layer = L.rectangle([[0, 0], [0, 0]], this.options.pathOptions);
+    this._layer = L.rectangle(
+      [
+        [0, 0],
+        [0, 0],
+      ],
+      this.options.pathOptions
+    );
     this._layer._pmTempLayer = true;
 
     // this is the marker at the origin of the rectangle
@@ -152,8 +158,10 @@ Draw.Rectangle = Draw.extend({
     const latlng = this._hintMarker.getLatLng();
 
     // show and place start marker
-    L.DomUtil.addClass(this._startMarker._icon, 'visible');
     this._startMarker.setLatLng(latlng);
+    if (this.options.cursorMarker) {
+      L.DomUtil.addClass(this._startMarker._icon, 'visible');
+    }
 
     // if we have the other two visibilty markers, show and place them now
     if (this.options.cursorMarker && this._styleMarkers) {
