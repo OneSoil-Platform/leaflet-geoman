@@ -87,10 +87,13 @@ Draw.Rectangle = Draw.extend({
     this._map._container.style.cursor = 'crosshair';
 
     // create a polygon-point on click
-    this._map.on('click', this._placeStartingMarkers, this);
+    this._map.on('mousedown', this._placeStartingMarkers, this);
 
     // sync hint marker with mouse cursor
     this._map.on('mousemove', this._syncHintMarker, this);
+
+    // disable map draggin to allow drawing while dragging
+    this._map.dragging.disable();
 
     // fire drawstart event
     this._map.fire('pm:drawstart', {
@@ -120,8 +123,9 @@ Draw.Rectangle = Draw.extend({
 
     // unbind listeners
     this._map.off('click', this._finishShape, this);
-    this._map.off('click', this._placeStartingMarkers, this);
+    this._map.off('mousedown', this._placeStartingMarkers, this);
     this._map.off('mousemove', this._syncHintMarker, this);
+    this._map.dragging.enable();
 
     // remove helping layers
     this._map.removeLayer(this._layerGroup);
