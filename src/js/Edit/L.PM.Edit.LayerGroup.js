@@ -75,6 +75,9 @@ Edit.LayerGroup = L.Class.extend({
       'pm:vertexadded',
       'pm:vertexremoved',
       'pm:centerplaced',
+      'pm:vertexselection',
+      'pm:vertexselected',
+      'pm:vertexdeselected',
     ];
 
     // listen to the events of the layers in this group
@@ -108,6 +111,11 @@ Edit.LayerGroup = L.Class.extend({
   enabled() {
     const enabled = this._layers.find(layer => layer.pm.enabled());
     return !!enabled;
+  },
+  removeSelectedMarkers() {
+    this._layers.forEach(layer => {
+      layer.pm.removeSelectedMarkers();
+    });
   },
   dragging() {
     const dragging = this._layers.find(layer => layer.pm.dragging());

@@ -145,6 +145,8 @@ Edit.Line = Edit.extend({
 
     this._selectedMarkers.push(m);
     m._icon.classList.add('marker-icon-selected');
+    this._layer.fire('pm:vertexselection', { count: this._selectedMarkers.length });
+    this._layer.fire('pm:vertexselected', { marker: m });
   },
 
   deselectMarker(m) {
@@ -155,11 +157,14 @@ Edit.Line = Edit.extend({
 
     this._selectedMarkers.splice(idx, 1);
     m._icon.classList.remove('marker-icon-selected');
+    this._layer.fire('pm:vertexselection', { count: this._selectedMarkers.length });
+    this._layer.fire('pm:vertexdeselected', { marker: m });
   },
 
-  removeSelectedMarkes() {
+  removeSelectedMarkers() {
     this._selectedMarkers.slice().forEach(m => {
       this._removeMarker({ target: m });
+      this.deselectMarker(m);
     })
   },
 
