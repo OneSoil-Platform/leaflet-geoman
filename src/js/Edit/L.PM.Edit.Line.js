@@ -49,7 +49,7 @@ Edit.Line = Edit.extend({
       return;
     }
 
-    if (!this.enabled()) {
+    if (this.enabled()) {
       // if it was already enabled, disable first
       // we don't block enabling again because new options might be passed
       this.disable();
