@@ -32,6 +32,10 @@ Draw.Cut = Draw.Polygon.extend({
         }
       });
 
+    if (layers.length === 0) {
+      return false;
+    }
+
     // loop through all layers that intersect with the drawn (cutting) layer
     layers.forEach(l => {
       // find layer difference
@@ -74,6 +78,8 @@ Draw.Cut = Draw.Polygon.extend({
 
 
     });
+
+    return true;
   },
   _finishShape() {
     // if self intersection is not allowed, do not finish the shape!
@@ -87,7 +93,7 @@ Draw.Cut = Draw.Polygon.extend({
 
     const coords = this._layer.getLatLngs();
     const polygonLayer = L.polygon(coords, this.options.pathOptions);
-    this._cut(polygonLayer);
+    const cutted = this._cut(polygonLayer);
 
     this._lastHintMarkerPos = this._hintMarker.getLatLng();
     this.disable();
@@ -98,5 +104,10 @@ Draw.Cut = Draw.Polygon.extend({
     // remove the first vertex from "other snapping layers"
     this._otherSnapLayers.splice(this._tempSnapLayerIndex, 1);
     delete this._tempSnapLayerIndex;
+
+    if (!cutted) {
+      // restart the cut when nothing was cut
+      this.enable();
+    }
   },
 });
