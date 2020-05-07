@@ -96,6 +96,9 @@ Edit.Line = Edit.extend({
       return false;
     }
 
+    // deselect all remaining markers
+    this._selectedMarkers.slice().forEach(this.deselectMarker, this);
+
     // prevent disabling if polygon is being dragged
     if (poly.pm._dragging) {
       return false;
@@ -109,8 +112,6 @@ Edit.Line = Edit.extend({
 
     // remove onRemove listener
     this._layer.off('remove', this._onLayerRemove, this);
-
-
 
     if (!this.options.allowSelfIntersection) {
       this._layer.off(
