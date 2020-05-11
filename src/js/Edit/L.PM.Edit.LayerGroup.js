@@ -78,6 +78,7 @@ Edit.LayerGroup = L.Class.extend({
       'pm:vertexselection',
       'pm:vertexselected',
       'pm:vertexdeselected',
+      'pm:vertexclicked',
     ];
 
     // listen to the events of the layers in this group

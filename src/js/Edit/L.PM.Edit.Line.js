@@ -293,6 +293,7 @@ Edit.Line = Edit.extend({
     marker.on('dragstart', this._onMarkerDragStart, this);
     marker.on('move', this._onMarkerDrag, this);
     marker.on('dragend', this._onMarkerDragEnd, this);
+    marker.on('click', this._onMarkerClick, this);
 
     if (!this.options.preventMarkerRemoval) {
       marker.on('contextmenu', this._removeMarker, this);
@@ -562,6 +563,13 @@ Edit.Line = Edit.extend({
   _onMarkerMouseDown(e) {
     // don't forward mouse down to map, works well with drag-selections
     L.DomEvent.stopPropagation(e);
+  },
+
+  _onMarkerClick(e) {
+    this._layer.fire('pm:vertexclicked', {
+      originalEvent: e,
+      marker: e.target,
+    });
   },
 
   _onMarkerDrag(e) {
