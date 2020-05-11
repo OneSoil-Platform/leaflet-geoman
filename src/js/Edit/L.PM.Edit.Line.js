@@ -289,6 +289,7 @@ Edit.Line = Edit.extend({
 
     marker._pmTempLayer = true;
 
+    marker.on('mousedown', this._onMarkerMouseDown, this);
     marker.on('dragstart', this._onMarkerDragStart, this);
     marker.on('move', this._onMarkerDrag, this);
     marker.on('dragend', this._onMarkerDragEnd, this);
@@ -556,6 +557,11 @@ Edit.Line = Edit.extend({
 
     // set new coords on layer
     this._layer.setLatLngs(coords);
+  },
+
+  _onMarkerMouseDown(e) {
+    // don't forward mouse down to map, works well with drag-selections
+    L.DomEvent.stopPropagation(e);
   },
 
   _onMarkerDrag(e) {
