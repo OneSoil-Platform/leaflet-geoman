@@ -117,6 +117,11 @@ Edit.LayerGroup = L.Class.extend({
       layer.pm.removeSelectedMarkers();
     });
   },
+  deselectAllMarkers() {
+    this._layers.forEach(layer => {
+      layer.pm.deselectAllMarkers();
+    });
+  },
   dragging() {
     const dragging = this._layers.find(layer => layer.pm.dragging());
     return !!dragging;
