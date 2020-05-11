@@ -92,9 +92,6 @@ Draw.Rectangle = Draw.extend({
     // sync hint marker with mouse cursor
     this._map.on('mousemove', this._syncHintMarker, this);
 
-    // disable map draggin to allow drawing while dragging
-    this._map.dragging.disable();
-
     // fire drawstart event
     this._map.fire('pm:drawstart', {
       shape: this._shape,
@@ -122,10 +119,9 @@ Draw.Rectangle = Draw.extend({
     this._map._container.style.cursor = '';
 
     // unbind listeners
-    this._map.off('click', this._finishShape, this);
+    this._map.off('mouseup', this._finishShape, this);
     this._map.off('mousedown', this._placeStartingMarkers, this);
     this._map.off('mousemove', this._syncHintMarker, this);
-    this._map.dragging.enable();
 
     // remove helping layers
     this._map.removeLayer(this._layerGroup);
@@ -175,8 +171,8 @@ Draw.Rectangle = Draw.extend({
       });
     }
 
-    this._map.off('click', this._placeStartingMarkers, this);
-    this._map.on('click', this._finishShape, this);
+    this._map.off('mousedown', this._placeStartingMarkers, this);
+    this._map.on('mouseup', this._finishShape, this);
 
     // change tooltip text
     this._hintMarker.setTooltipContent(getTranslation('tooltips.finishRect'));

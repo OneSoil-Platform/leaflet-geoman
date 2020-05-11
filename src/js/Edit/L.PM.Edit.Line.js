@@ -150,6 +150,14 @@ Edit.Line = Edit.extend({
     this._layer.fire('pm:vertexselected', { marker: m });
   },
 
+  toggleMarkerSelection(m) {
+    if (this._selectedMarkers.includes(m)) {
+      this.deselectMarker(m);
+    } else {
+      this.selectMarker(m);
+    }
+  },
+
   deselectMarker(m) {
     const idx = this._selectedMarkers.indexOf(m);
     if (idx === -1) {

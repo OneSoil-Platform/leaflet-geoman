@@ -31,10 +31,12 @@ Draw.Selection = Draw.Rectangle.extend({
         if (!bounds.contains(latlng)) {
           return;
         }
-        l.pm.selectMarker(m);
+        l.pm.toggleMarkerSelection(m);
       };
       markSelectedMarkers(l.pm._markers);
     });
+
+    this._map.fire('pm:select', { bounds });
   },
   _finishShape(e) {
     // assign the coordinate of the click to the hintMarker, that's necessary for
