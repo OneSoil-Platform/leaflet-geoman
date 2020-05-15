@@ -2,7 +2,7 @@ import kinks from '@turf/kinks';
 import get from 'lodash/get';
 import Edit from './L.PM.Edit';
 import Utils from '../L.PM.Utils';
-import { isEmptyDeep } from '../helpers';
+import { removeEmptyDeep } from '../helpers';
 
 import MarkerLimits from '../Mixins/MarkerLimits';
 
@@ -418,7 +418,7 @@ Edit.Line = Edit.extend({
     const marker = e.target;
 
     // coords of the layer
-    const coords = this._layer.getLatLngs();
+    let coords = this._layer.getLatLngs();
 
     // the index path to the marker inside the multidimensional marker array
     const { indexPath, index, parentPath } = this.findDeepMarkerIndex(
@@ -448,6 +448,9 @@ Edit.Line = Edit.extend({
     if (coordsRing.length <= 1) {
       coordsRing.splice(0, coordsRing.length);
 
+      // remove empty rings on all levels recursively
+      coords = removeEmptyDeep(coords);
+
       // set new coords
       this._layer.setLatLngs(coords);
 
@@ -457,10 +460,8 @@ Edit.Line = Edit.extend({
       this.enable(this.options);
     }
 
-    // TODO: we may should remove all empty coord-rings here as well.
-
     // if no coords are left, remove the layer
-    if (isEmptyDeep(coords)) {
+    if (coords.length === 0) {
       this._layer.remove();
     }
 
@@ -501,7 +502,7 @@ Edit.Line = Edit.extend({
     markerArr.splice(index, 1);
 
     // fire edit event
-    this._fireEdit();
+    this._fireEdit({ removed: coords.length === 0 });
 
     // fire vertex removal event
     this._layer.fire('pm:vertexremoved', {
@@ -702,9 +703,9 @@ Edit.Line = Edit.extend({
     }
   },
 
-  _fireEdit() {
+  _fireEdit(params) {
     // fire edit event
     this._layerEdited = true;
-    this._layer.fire('pm:edit');
+    this._layer.fire('pm:edit', params);
   },
 });

@@ -21,3 +21,17 @@ export function isEmptyDeep(l) {
 
   return !flatten(l).length;
 }
+
+export function removeEmptyDeep(o) {
+  return o.map(item => {
+    if (!Array.isArray(item)) {
+      return item;
+    }
+    return removeEmptyDeep(item);
+  }).filter(item => {
+    if (!Array.isArray(item)) {
+      return true;
+    }
+    return item.length !== 0;
+  });
+}
